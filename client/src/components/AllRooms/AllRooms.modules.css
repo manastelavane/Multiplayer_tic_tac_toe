@@ -1,0 +1,98 @@
+.roomcontainer h2{
+    margin: 20px;
+}
+.roomszero{
+    height: calc(100vh - 68px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.roomszero h2{
+    font-weight: 100;
+    text-align: center;
+    font-size: 50px;
+}
+
+.button-container-rooms {
+    width: 100%;
+    /* margin:0 auto; */
+}
+.fixed-new-game{
+    position: fixed;
+    bottom: 30px;
+    right: 15px;
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    padding: 7px;
+    background-color: black;
+    color: white;
+    cursor: pointer;
+}
+.fixed-new-game h4{
+    margin-left: 4px;
+}
+.card{
+    /* border:1px solid black; */
+    margin: 15px !important;
+    padding: 20px;
+    border-radius: 10px;
+    width: max-content;
+    box-shadow: 1px 1px 15px 0px #a4a3a3;
+    width: 400px;
+    height: 225px;
+}
+
+.allrooms-register{
+    width:calc(100% );
+    text-align: center;
+    margin: 0;
+    /* width: 100%; */
+    /* margin:10px 20px ; */
+    padding: 10px;
+    border-radius: 4px;
+    background-color: #f2c94c;
+    color: white;
+    border: 0px ;
+    cursor: pointer;
+    margin-bottom: 15px;
+    /* position: relative; */
+    /* bottom: 0px; */
+    /* margin: 0; */
+}
+.allrooms-register1{
+    text-align: center;
+    /* margin: auto; */
+    margin:10px 20px ;
+    padding: 10px;
+    border-radius: 4px;
+    background-color: #f2c94c;
+    color: white;
+    border: 0px ;
+    cursor: pointer;
+    margin-bottom: 15px;
+    width: calc(100% - 40px);
+}
+.card-heading{
+    font-size: 25px;
+    font-weight: 800;
+}
+.roomsnonzero{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-items: center;
+}
+.card h3{
+    font-weight: 100;
+}
+@media only screen and (max-width:500px) {
+    .roomsnonzero{
+        justify-content:flex-start;
+    }
+    .card{
+        margin: 20px!important;
+        width: 100%;
+    }
+}

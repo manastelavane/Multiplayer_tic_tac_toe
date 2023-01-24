@@ -1,0 +1,33 @@
+.login{
+    margin-bottom: 15px;
+}
+.logindiv  input:focus {
+    outline: none !important;
+    /* border:1px solid #719ECE ; */
+    border: 2px solid #2f80ed !important;
+}
+.alertred{
+    /* text-align: center; */
+    margin:10px 20px ;
+    padding:20px 10px;
+    border-radius: 4px;
+    background-color: #eb5757;
+    color: white;
+    border: 0px ;
+    cursor: pointer;
+    margin-bottom: 7px;
+}
+.alertgreen{
+    /* text-align: center; */
+    margin:10px 20px ;
+    padding:20px 10px;
+    border-radius: 4px;
+    background-color: #6fcf97;
+    color: white;
+    border: 0px ;
+    cursor: pointer;
+    margin-bottom: 7px;
+}
+.auth{
+    background-color: #e0e0e0;
+}

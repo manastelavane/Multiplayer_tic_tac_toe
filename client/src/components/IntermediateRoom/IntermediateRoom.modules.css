@@ -1,0 +1,10 @@
+.intermediate-room-register{
+    margin:10px 20px ;
+    padding: 10px;
+    border-radius: 4px;
+    background-color: #f2c94c;
+    color: white;
+    border: 0px ;
+    cursor: pointer;
+    margin-bottom: 15px;
+}

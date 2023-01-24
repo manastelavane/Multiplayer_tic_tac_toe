@@ -1,0 +1,58 @@
+.inner-container{
+    margin: 0 20px;
+    /* margin-top: 10px; */
+}
+.arrowicon{
+    margin-top: 10px;
+    margin-bottom: 15px;
+    cursor: pointer;
+}
+.button-container{
+    width: 100%;
+    margin: auto;
+}
+.input-container{
+    display: flex;
+    flex-direction: column;
+    
+}
+.register-heading{
+    font-weight: 600;
+    font-size: 37px;
+    line-height: 40px;
+    margin-bottom: 15px;   
+    margin-top: 8px; 
+}
+
+input{
+    font-size: 15px;
+    padding: 15px;
+    border:0;
+    border-radius: 10px;
+    color: #9b9b9b;
+    background-color: #f4f4f4;
+    /* width: 100%; */
+    margin-bottom: 15px;
+}
+.registerdiv  input:focus {
+    outline: none !important;
+    /* border:1px solid #719ECE ; */
+    border: 2px solid #f2c94c !important;
+}
+label{
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+.register-register{
+    margin:10px 20px ;
+    padding: 10px;
+    border-radius: 4px;
+    background-color: #f2c94c;
+    color: white;
+    border: 0px ;
+    cursor: pointer;
+    margin-bottom: 15px;
+}
+.auth{
+    background-color: #e0e0e0;
+}
