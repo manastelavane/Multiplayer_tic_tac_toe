@@ -23,14 +23,13 @@ const roomsSchema = mongoose.Schema({
         type:Number,
         default:-1
     },
-    allMoves:{
-        type:[{
-            move:Number,
-            myMove:Boolean
-        }],
-        default:[
-            {move:-1,myMove:false}, {move:-1,myMove:false}, {move:-1,myMove:false}, {move:-1,myMove:false}, {move:-1,myMove:false}, {move:-1,myMove:false}, {move:-1,myMove:false}, {move:-1,myMove:false} ,{move:-1,myMove:false},{move:-1,myMove:false}
-        ]
+    adminMoves:{
+        type:[Number],
+        default:[]
+    },
+    rivalMoves:{
+        type:[Number],
+        default:[]
     }
 });
 

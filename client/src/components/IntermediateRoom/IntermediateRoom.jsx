@@ -21,6 +21,8 @@ const IntermediateRoom = ({socket}) => {
 },[])
   const handleSubmit = (e) => {
     e.preventDefault();
+    const roomId=nanoid(7);
+    socket.emit('joinRoom', {username:user?.result?.userName, roomId});
     dispatch(createroom(form))
   };
   if(room){
