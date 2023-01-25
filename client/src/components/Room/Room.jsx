@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./Room.modules.css";
 import icon from "../image.ico";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
@@ -8,9 +8,11 @@ const Room = ({ socket }) => {
   const user = JSON.parse(localStorage.getItem("profile"));
   const [adminMoves, setAdminMoves] = useState([]);
   const [rivalMoves, setRivalMoves] = useState([]);
+  const [finaltext,setFinaltext] = useState('');
   const [totalmove,setTotalMove]=useState(0)
   const [winner,setWinner]=useState(-1)
-  const [temp, settemp] = useState(true);
+  const [temp, settemp] = useState(-1);
+  const ref=useRef(-1)
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -23,10 +25,14 @@ const Room = ({ socket }) => {
         setAdminMoves(room?.adminMoves);
         setRivalMoves(room?.rivalMoves);
         setTotalMove(room?.move)
+        setFinaltext('Submit')
+        // setrivalUsernameg(room?.rivalUsername)
       } else {
         setAdminMoves(room?.rivalMoves);
         setRivalMoves(room?.adminMoves);
         setTotalMove(room?.move)
+        setFinaltext('Waiting')
+        // setrivalUsernameg(room?.adminUsername)
       }
       console.log("first render", adminMoves, rivalMoves);
     }
@@ -50,52 +56,79 @@ const Room = ({ socket }) => {
         setTotalMove((prev)=>prev+1)
       }
     });
-    // socket.on('win', (payload)=>{
-    //   // console.log("WINNER WINNER WINNER!!! ",payload);
-    //   if(payload.username===user.result.username){
-    //     setWinner(1);
-    //   }
-    //   else{
-    //     setWinner(0);
-    //   }
-    // })
+    socket.on('win', (payload)=>{
+      // console.log("WINNER WINNER WINNER!!! ",payload);
+      if(payload.username===user.result.username){
+        setWinner(1);
+      }
+      else{
+        setWinner(0);
+      }
+    })
 
-    // socket.on('draw', (payload)=>{
-    //   // console.log("DRAW DRAW DRAW!!! ",payload);
-    //   setWinner(2);
-    // })
+    socket.on('draw', (payload)=>{
+      // console.log("DRAW DRAW DRAW!!! ",payload);
+      setWinner(2);
+    })
   }, []);
-
+  
+  const handleSubmit=(m)=>{
+    if (room?.adminUsername === user.result.username) {
+      // setFinaltext('Waiting')
+      socket.emit("move", {
+        amove: ref.current,
+        adminMoves: adminMoves,
+        rivalMoves: rivalMoves,
+        roomId: room.roomId,
+        username:user.result.username
+      });
+    } else {
+      // setFinaltext('Submit')
+      socket.emit("move", {
+        rmove: ref.current,
+        adminMoves: adminMoves,
+        rivalMoves: rivalMoves,
+        roomId: room.roomId,
+        username:user.result.username
+      });
+    }
+    ref.current=-1;
+  }
+  // console.log(ref.current)
   const handleMoveClick = (m) => {
+    if(winner!==-1){
+      return;
+    }
     if (room?.adminUsername === user.result.username && totalmove%2!==0) {
       return;
     }else if(room?.rivalUsername === user.result.username && totalmove%2===0){
       return;
     }
-    console.log(m);
     if (room?.adminUsername === user.result.username) {
-      console.log("adminMoves before in if of handlemove", adminMoves);
       
-      socket.emit("move", {
-        amove: m,
-        adminMoves: adminMoves,
-        rivalMoves: rivalMoves,
-        roomId: room.roomId,
-        username:user.result.username
-      });
-      console.log("adminMoves after in if of handlemove", adminMoves);
-    } else {
-      console.log("rivalMoves before in if of handlemove", rivalMoves);
-      
-      socket.emit("move", {
-        rmove: m,
-        adminMoves: adminMoves,
-        rivalMoves: rivalMoves,
-        roomId: room.roomId,
-        username:user.result.username
-      });
+      if(ref.current!==-1){
+        ref.current=m;
+        const tempmoves=[...adminMoves]
+        tempmoves[tempmoves.length-1]=m;
+        setAdminMoves(tempmoves);
+      }else{
+      ref.current=m;
+      setAdminMoves((prev) => [...prev, m]);
     }
-    console.log("before emit", adminMoves, rivalMoves);
+      
+      console.log(adminMoves,ref.current)
+    }else{
+      if(ref.current!==-1){
+        ref.current=m;
+        const tempmoves=[...rivalMoves]
+        tempmoves[tempmoves.length-1]=m;
+        setRivalMoves(tempmoves);
+      }else{
+      ref.current=m;
+      setRivalMoves((prev) => [...prev, m]);
+    }
+
+    }
   };
   const checkEmpty = (m) => {
     const x = adminMoves?.includes(m);
@@ -114,6 +147,9 @@ const Room = ({ socket }) => {
       return x;
     }
   };
+  useEffect(()=>{
+
+  },[adminMoves])
   if (isLoading) {
     return <>Loading...</>;
   }
@@ -131,7 +167,7 @@ const Room = ({ socket }) => {
         <p>Your piece</p>
         <div className="my-piece-x">X</div>
       </div>
-      <div className="result">
+      <div className={`${winner===-1?user?.result?.username === room?.adminUsername?totalmove%2===0?'result yellow':'result yellow':totalmove%2!==0?'result yellow':'result yellow':winner===0?'result red':winner===1?'result green':winner===2?"result yellow":'result'}`}>
         {
           // if(winner==-1){
           //   if(user.result.username===room.adminUsername){
@@ -156,7 +192,7 @@ const Room = ({ socket }) => {
           // }else{
           //   null
           // }
-          winner===-1?user?.result?.username === room?.adminUsername?totalmove%2===0?'Your move':'Thier Move':totalmove%2!==0?'Your move':'Thier move':winner===0?'You Lost':winner===1?'You won':winner===2?'Draw':''
+          winner===-1?user?.result?.username === room?.adminUsername?totalmove%2===0?'Your move':'Thier Move':totalmove%2!==0?'Your move':'Thier move':winner===0?'You lost':winner===1?'You win':winner===2?"It's a Draw":''
         }
       </div>
       <div className="grid-container">
@@ -307,8 +343,12 @@ const Room = ({ socket }) => {
       </div>
 
       <div className="button-container-register">
-        <button className="room-register" type="submit">
-          Submit
+        <button className="room-register" type="submit" onClick={ref.current!==-1?()=>handleSubmit():null}>
+        {/* {`${winner===-1?user?.result?.username === room?.adminUsername?totalmove%2===0?'Submit':`Waiting for ${rivalUsernameg}`:totalmove%2!==0?'Submit':`Waiting for ${rivalUsernameg}`:winner===0?'Start another game':winner===1?'Start another game':winner===2?'Start another game':'Submit'}`} */}
+        {/* Submit */}
+        {/* {ref.current!==-1?'submit':`Waiting for ${rivalUsernameg}`} */}
+        {/* {winner===-1?user?.result?.username===room?.adminUsername?totalmove%2===0?'Submit':'Waiting':totalmove%2!==0?'submit':'waiting':'nul'} */}
+        {winner===-1?`${finaltext}`:"Start another game"}
         </button>
       </div>
     </div>

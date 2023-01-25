@@ -71,8 +71,19 @@
     margin: auto;
     font-size: 22px;
     color: white;
-    background-color: #ff4f4f;
     border-bottom:6px solid #ffe79e;
+}
+.yellow{
+    color: black;
+    background-color:#ffe79e ;
+}
+.red{
+    color: white;
+    background-color: #eb5757;
+}
+.green{
+    color: white;
+    background-color: #219653;
 }
 .grid-item-hover:hover{
     background-color: #61dafb1c;

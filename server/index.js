@@ -41,7 +41,12 @@ function CheckWin(newadminMoves,newrivalMoves) {
           isWin = false;
         }
       }
-      
+      if(isWin===true){
+        break;
+      }
+    }
+    if(isWin===true){
+        return {isWin}
     }
     for(let i=0; i<winPatterns.length; i++){
         let win_pattern = winPatterns[i];
@@ -50,7 +55,10 @@ function CheckWin(newadminMoves,newrivalMoves) {
           if(!newrivalMoves.includes(win_pattern[j])){
             isWin = false;
           }
-        }   
+        }  
+        if(isWin===true){
+            break;
+          } 
       }
     // console.log("isWin: ", isWin);
     return {isWin};
@@ -107,27 +115,28 @@ io.on("connection", (socket) => {
             console.log(updateroom)
             // await RoomsModal.findByIdAndUpdate(room._id, updateroom, { new: true });
         }
-        // let newadminMoves,newrivalMoves;
-        // if(payload?.amove){
-        //     newadminMoves=payload.adminMoves
-        //     newadminMoves.push(payload.amove)
-        //     newrivalMoves=payload.rivalMoves
-        // }else{
-        //     newrivalMoves=payload.rivalMoves
-        //     newrivalMoves.push(payload.rmove)
-        //     newadminMoves=payload.adminMoves
-        // }
-        // if(newadminMoves.length+newrivalMoves.length>=3){
-        //     const {isWin} = CheckWin(newadminMoves,newrivalMoves);
-        //     if(isWin){
-        //         io.in(payload.roomId).emit('win',{username:payload.username});
-        //         return;
-        //     }
-        //     if(newadminMoves.length + newrivalMoves.length >= 9){
-        //         io.in(payload.roomId).emit('draw', {username:payload.username});
-        //         return;
-        //     }
-        // }
+        let newadminMoves,newrivalMoves;
+        if(payload?.amove){
+            newadminMoves=payload.adminMoves
+            newadminMoves.push(payload.amove)
+            newrivalMoves=payload.rivalMoves
+        }else{
+            newrivalMoves=payload.rivalMoves
+            newrivalMoves.push(payload.rmove)
+            newadminMoves=payload.adminMoves
+        }
+        if(newadminMoves.length+newrivalMoves.length>=3){
+            const {isWin} = CheckWin(newadminMoves,newrivalMoves);
+            if(isWin){
+                console.log(isWin)
+                io.in(payload.roomId).emit('win',{username:payload.username});
+                return;
+            }
+            if(newadminMoves.length + newrivalMoves.length >= 9){
+                io.in(payload.roomId).emit('draw', {username:payload.username});
+                return;
+            }
+        }
     })
 
     socket.on('usersEntered',(payload)=>{
