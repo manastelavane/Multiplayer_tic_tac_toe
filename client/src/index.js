@@ -1,25 +1,27 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
-import { BrowserRouter } from 'react-router-dom';
-import { configureStore } from '@reduxjs/toolkit'
-import { Provider } from 'react-redux';
-import { createRoot } from 'react-dom/client';
-import {  applyMiddleware, compose } from 'redux';
-import thunk from 'redux-thunk';
+import React from "react";
+import App from "./App";
+import reportWebVitals from "./reportWebVitals";
+import { BrowserRouter } from "react-router-dom";
+import { configureStore } from "@reduxjs/toolkit";
+import { Provider } from "react-redux";
+import { createRoot } from "react-dom/client";
+import { applyMiddleware, compose } from "redux";
+import thunk from "redux-thunk";
 
-import { reducers } from './reducers';
-const store = configureStore({reducer:reducers}, compose(applyMiddleware(thunk)));
-const container = document.getElementById('root');
+import { reducers } from "./reducers";
+const store = configureStore(
+  { reducer: reducers },
+  compose(applyMiddleware(thunk))
+);
+const container = document.getElementById("root");
 const root = createRoot(container);
 root.render(
   // <React.StrictMode>
-    <Provider store={store}>
+  <Provider store={store}>
     <BrowserRouter>
-    <App />
+      <App />
     </BrowserRouter>
-    </Provider>
+  </Provider>
   // </React.StrictMode>
 );
 
