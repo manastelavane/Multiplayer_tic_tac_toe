@@ -30,6 +30,31 @@ app.use(cors());
 DbConnect();
 app.use("/user", userRouter);
 app.use("/rooms", roomsRouter);
+function CheckWin(newadminMoves,newrivalMoves) {
+    const winPatterns = [[1,2,3],[4,5,6],[7,8,9],[1,4,7],[2,5,8],[3,6,9],[1,5,9],[3,5,7]];
+    let isWin;
+    for(let i=0; i<winPatterns.length; i++){
+      let win_pattern = winPatterns[i];
+      isWin = true;
+      for(let j=0; j<win_pattern.length; j++){
+        if(!newadminMoves.includes(win_pattern[j])){
+          isWin = false;
+        }
+      }
+      
+    }
+    for(let i=0; i<winPatterns.length; i++){
+        let win_pattern = winPatterns[i];
+        isWin = true;
+        for(let j=0; j<win_pattern.length; j++){
+          if(!newrivalMoves.includes(win_pattern[j])){
+            isWin = false;
+          }
+        }   
+      }
+    // console.log("isWin: ", isWin);
+    return {isWin};
+  }
 io.on("connection", (socket) => {
     console.log('user connected')
     socket.on('join_room', (payload)=>{
@@ -48,47 +73,18 @@ io.on("connection", (socket) => {
 
     })
     socket.on('move', async(payload)=>{
-       
-        // const current_room =  await getGameDetail(payload.roomId);
-        // let current_username;
-        // let moveCount;
-
-        // if(!current_room.user1.userId || !current_room.user2.userId){
-        //     io.in(payload.roomId).emit('userLeave',{});
-        //     // console.log("user left");
-        // }
-        
-        // if(current_room.user1.userId == payload.userId){
-        //     current_room.user1.moves.push(payload.move);
-        //     moveCount = current_room.user1.moves.length;
-        //     current_username = current_room.user1.username;
-        // }
-        // else {
-        //     current_room.user2.moves.push(payload.move);
-        //     moveCount = current_room.user2.moves.length;
-        //     current_username = current_room.user2.username;
-        // }
-        // if(payload.adminMoves===undefined){
-        //     payload.adminMoves=[]
-        //   }
-        //   if(payload.rivalMoves===undefined){
-        //     payload.rivalMoves=[]
-        //   }
-        // console.log(payload.,payload.rivalMoves)
-        io.in(payload.roomId).emit('move',{amove:payload?.amove,rmove:payload?.rmove,adminMoves:payload.adminMoves,rivalMoves:payload.rivalMoves});
+        io.in(payload.roomId).emit('move',{amove:payload?.amove,rmove:payload?.rmove,adminMoves:payload.adminMoves,rivalMoves:payload.rivalMoves,username:payload.username});
         if(payload?.amove){
             const arr=payload.adminMoves
             arr.push(payload.amove)
             const room = await RoomsModal.findOne({roomId:payload.roomId});
-            console.log("hi")
-            console.log(room)
             const updateroom={
                 _id:room._id,
                 roomId:room.roomId,
                 adminUsername:room.adminUsername,
                 rivalUsername:room.rivalUsername,
                 rivalMoves:payload.rivalMoves,
-                move:room.move,
+                move:room.move+1,
                 won:room.won,
                 adminMoves:arr,
             }
@@ -111,17 +107,24 @@ io.on("connection", (socket) => {
             console.log(updateroom)
             // await RoomsModal.findByIdAndUpdate(room._id, updateroom, { new: true });
         }
-        // if(moveCount>=3){
-        //     const {isWin, winCount, pattern} = CheckWin(payload.roomId, payload.userId);
-
+        // let newadminMoves,newrivalMoves;
+        // if(payload?.amove){
+        //     newadminMoves=payload.adminMoves
+        //     newadminMoves.push(payload.amove)
+        //     newrivalMoves=payload.rivalMoves
+        // }else{
+        //     newrivalMoves=payload.rivalMoves
+        //     newrivalMoves.push(payload.rmove)
+        //     newadminMoves=payload.adminMoves
+        // }
+        // if(newadminMoves.length+newrivalMoves.length>=3){
+        //     const {isWin} = CheckWin(newadminMoves,newrivalMoves);
         //     if(isWin){
-                
-        //         io.in(payload.roomId).emit('win',{userId:payload.userId, username:current_username, pattern});
+        //         io.in(payload.roomId).emit('win',{username:payload.username});
         //         return;
         //     }
-
-        //     if(current_room.user1.moves.length + current_room.user2.moves.length >= 9){
-        //         io.in(payload.roomId).emit('draw', {roomId:payload.roomId});
+        //     if(newadminMoves.length + newrivalMoves.length >= 9){
+        //         io.in(payload.roomId).emit('draw', {username:payload.username});
         //         return;
         //     }
         // }

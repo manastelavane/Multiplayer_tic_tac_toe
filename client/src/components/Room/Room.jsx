@@ -8,6 +8,8 @@ const Room = ({ socket }) => {
   const user = JSON.parse(localStorage.getItem("profile"));
   const [adminMoves, setAdminMoves] = useState([]);
   const [rivalMoves, setRivalMoves] = useState([]);
+  const [totalmove,setTotalMove]=useState(0)
+  const [winner,setWinner]=useState(-1)
   const [temp, settemp] = useState(true);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -20,9 +22,11 @@ const Room = ({ socket }) => {
       if (user?.result?.username === room?.adminUsername) {
         setAdminMoves(room?.adminMoves);
         setRivalMoves(room?.rivalMoves);
+        setTotalMove(room?.move)
       } else {
         setAdminMoves(room?.rivalMoves);
         setRivalMoves(room?.adminMoves);
+        setTotalMove(room?.move)
       }
       console.log("first render", adminMoves, rivalMoves);
     }
@@ -38,32 +42,57 @@ const Room = ({ socket }) => {
       if (payload.amove) {
         console.log(payload.amove);
         setAdminMoves((prev) => [...prev, payload.amove]);
+        setTotalMove((prev)=>prev+1)
       } else {
         console.log(payload.rmove);
 
         setRivalMoves((prev) => [...prev, payload.rmove]);
+        setTotalMove((prev)=>prev+1)
       }
     });
+    // socket.on('win', (payload)=>{
+    //   // console.log("WINNER WINNER WINNER!!! ",payload);
+    //   if(payload.username===user.result.username){
+    //     setWinner(1);
+    //   }
+    //   else{
+    //     setWinner(0);
+    //   }
+    // })
+
+    // socket.on('draw', (payload)=>{
+    //   // console.log("DRAW DRAW DRAW!!! ",payload);
+    //   setWinner(2);
+    // })
   }, []);
 
   const handleMoveClick = (m) => {
+    if (room?.adminUsername === user.result.username && totalmove%2!==0) {
+      return;
+    }else if(room?.rivalUsername === user.result.username && totalmove%2===0){
+      return;
+    }
     console.log(m);
     if (room?.adminUsername === user.result.username) {
       console.log("adminMoves before in if of handlemove", adminMoves);
+      
       socket.emit("move", {
         amove: m,
         adminMoves: adminMoves,
         rivalMoves: rivalMoves,
         roomId: room.roomId,
+        username:user.result.username
       });
       console.log("adminMoves after in if of handlemove", adminMoves);
     } else {
       console.log("rivalMoves before in if of handlemove", rivalMoves);
+      
       socket.emit("move", {
         rmove: m,
         adminMoves: adminMoves,
         rivalMoves: rivalMoves,
         roomId: room.roomId,
+        username:user.result.username
       });
     }
     console.log("before emit", adminMoves, rivalMoves);
@@ -102,7 +131,34 @@ const Room = ({ socket }) => {
         <p>Your piece</p>
         <div className="my-piece-x">X</div>
       </div>
-      <div className="result">You win</div>
+      <div className="result">
+        {
+          // if(winner==-1){
+          //   if(user.result.username===room.adminUsername){
+          //     if(move%2==0){
+          //       your move
+          //     }else{
+          //       thier move
+          //     }
+          //   }else{
+          //     if(move%2!=0){
+          //       your move
+          //     }else{
+          //       thier move
+          //     }
+          //   }
+          // }else if(winner==1){
+          //   You won
+          // }else if(winner==2){
+          //   you lost
+          // }else if(winner==3){
+          //   draw
+          // }else{
+          //   null
+          // }
+          winner===-1?user?.result?.username === room?.adminUsername?totalmove%2===0?'Your move':'Thier Move':totalmove%2!==0?'Your move':'Thier move':winner===0?'You Lost':winner===1?'You won':winner===2?'Draw':''
+        }
+      </div>
       <div className="grid-container">
         <div
           className="grid-item bottom right"
