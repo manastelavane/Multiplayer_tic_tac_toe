@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { createroom } from "../../actions/rooms";
-import { nanoid } from "nanoid";
 import icon from "../image.ico";
 import { CLEAR_ROOM } from "../../constants/actionTypes";
 import "./IntermediateRoom.modules.css";
