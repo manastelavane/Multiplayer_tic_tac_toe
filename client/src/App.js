@@ -11,18 +11,28 @@ const socket = io.connect(process.env.REACT_APP_SOCKET_SERVER_URL);
 function App() {
   return (
     <div>
-      <Routes>
-        <Route path="/" exact element={<Home />} />
-        <Route path="/login" exact element={<Login />} />
-        <Route path="/register" exact element={<Register />} />
-        <Route path="/allrooms" exact element={<AllRooms socket={socket} />} />
-        <Route
-          path="/intermediateroom"
-          exact
-          element={<IntermediateRoom socket={socket} />}
-        />
-        <Route path="/room/:id" exact element={<Room socket={socket} />} />
-      </Routes>
+      <div className="mainbody">
+        <Routes>
+          <Route path="/" exact element={<Home />} />
+          <Route path="/login" exact element={<Login />} />
+          <Route path="/register" exact element={<Register />} />
+          <Route
+            path="/allrooms"
+            exact
+            element={<AllRooms socket={socket} />}
+          />
+          <Route
+            path="/intermediateroom"
+            exact
+            element={<IntermediateRoom socket={socket} />}
+          />
+          <Route path="/room/:id" exact element={<Room socket={socket} />} />
+        </Routes>
+      </div>
+      <div className="largescreentext">
+        This website is optimized for mobile devices. For the best experience,
+        please visit us on your mobile phone.
+      </div>
     </div>
   );
 }

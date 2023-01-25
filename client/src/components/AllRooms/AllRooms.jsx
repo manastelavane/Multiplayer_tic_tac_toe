@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { getallrooms } from "../../actions/rooms";
+import Loader from "../Loader/Loader";
 import "./AllRooms.modules.css";
 import Card from "./Card";
 const AllRooms = () => {
@@ -26,7 +27,7 @@ const AllRooms = () => {
     // console.log("setted rooms", allrooms, rooms);
   }, [rooms, allrooms]);
   if (isLoading) {
-    return <div>Loading....</div>;
+    return <Loader />;
   }
   return (
     <div className="roomcontainer">

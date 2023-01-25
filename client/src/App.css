@@ -3,3 +3,24 @@
   padding: 0;
   box-sizing: border-box;
 }
+@media only screen and (min-width: 700px) {
+  /* Hides the website content on larger screens */
+  .mainbody {
+    display: none;
+  }
+  .largescreentext {
+    display: flex;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+    color: #eb5757;
+    font-size: large;
+    text-align: center;
+    margin: 20px;
+  }
+}
+@media only screen and (max-width: 700px) {
+  .largescreentext {
+    display: none;
+  }
+}
